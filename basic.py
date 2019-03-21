@@ -29,46 +29,43 @@ session = InstaPy(username=insta_username,
                   password=insta_password,
                   bypass_suspicious_attempt=True,
                   headless_browser=True)
+while True:
+    with smart_run(session):
+        """ Activity flow """
+        # general settings
+        session.set_relationship_bounds(enabled=True,
+                                        delimit_by_numbers=True,
+                                        max_followers=4590,
+                                        min_followers=45,
+                                        min_following=77)
 
-with smart_run(session):
-    """ Activity flow """
-    # general settings
-    session.set_relationship_bounds(enabled=True,
-                                    delimit_by_numbers=True,
-                                    max_followers=4590,
-                                    min_followers=45,
-                                    min_following=77)
+        session.set_quota_supervisor(enabled=True,
+                                sleep_after=["likes", "follows", "unfollows", "server_calls_h"],
+                                sleepyhead=True,
+                                stochastic_flow=True,
+                                notify_me=True,
+                                peak_likes=(57, None),
+                                peak_follows=(48, 689),
+                                peak_unfollows=(35, 402))
 
-    session.set_dont_include(["friend1", "friend2", "friend3"])
-    session.set_dont_like(["pizza"])
+        session.set_do_like(True, percentage=33)
+        session.set_dont_unfollow_active_users(enabled=True, posts=5)
+        session.set_user_interact(amount=3, percentage=45, randomize=True, media='Photo')
+        
 
-    # activities
+        # activities
 
-    """ Massive Follow of users followers (I suggest to follow not less than
-    3500/4000 users for better results)...
-    """
-    session.follow_user_followers(['natalia.rogon', 'juliefreund', 'julieschoen'], amount=800,
-                                  randomize=False, interact=False)
+        """ Massive Follow of users followers (I suggest to follow not less than
+        3500/4000 users for better results)...
+        """
+        session.follow_user_followers(['lonebrain', 'lauren_burch_', 'jazxsophie'], amount=800,
+                                    randomize=False, interact=True)
 
-    """ First step of Unfollow action - Unfollow not follower users...
-    """
-    session.unfollow_users(amount=500, InstapyFollowed=(True, "nonfollowers"),
-                           style="FIFO",
-                           unfollow_after=12 * 60 * 60, sleep_delay=642)
+        session.like_by_tags(['tumblraesthetics', 'softgrunge'], amount=200, interact=True)
 
-    """ Second step of Massive Follow...
-    """
-    session.follow_user_followers(['streetwear2k', 'nails_beauuty', 'soaestheticshop'], amount=800,
-                                  randomize=False, interact=False)
+        """ First step of Unfollow action - Unfollow not follower users...
+        """
+        session.unfollow_users(amount=421, InstapyFollowed=(True, "nonfollowers"),
+                            style="FIFO",
+                            unfollow_after=12 * 60 * 60, sleep_delay=642)
 
-    """ Second step of Unfollow action - Unfollow not follower users...
-    """
-    session.unfollow_users(amount=500, InstapyFollowed=(True, "nonfollowers"),
-                           style="FIFO",
-                           unfollow_after=12 * 60 * 60, sleep_delay=601)
-
-    """ Clean all followed user - Unfollow all users followed by InstaPy...
-    """
-    session.unfollow_users(amount=500, InstapyFollowed=(True, "all"),
-                           style="FIFO", unfollow_after=24 * 60 * 60,
-                           sleep_delay=601)
